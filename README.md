@@ -159,7 +159,7 @@ PermitRootLogin without-password
 PasswordAuthentication no
 ```
 
-To change SSH port - ALLOW NEW PORT IN UFW RULES BELOW AND RESTART UFW BEFORE RESTARTING SSH
+To change SSH port - **Allow new port in ufw rules below and restart ufw before restarting ssh**
 
 ```bash
 Port 22
