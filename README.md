@@ -431,6 +431,10 @@ rsync -aAXv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/
 ### <a name="tripwire"></a>Configure TripWire
 
 ```bash
+#https://www.digitalocean.com/community/tutorials/how-to-use-tripwire-to-detect-server-intrusions-on-an-ubuntu-vps
+```
+
+```bash
 sudo apt-get install tripwire
 ```
 
