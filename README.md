@@ -86,12 +86,24 @@ https://github.com/hwdsl2/setup-ipsec-vpn
 Open ports 500 and 4500 before running script
 
 ```bash
+ufw allow 500/udp
+ufw allow 4500/udp
+```
+
+```bash
+wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
+nano -w vpnsetup.sh
+```
+
+```bash
 PSK:your_private_key
 Username:your_username
 Password:your_password
 ```
 
-Change IP tables in script from port 22 to non-standard port for ssh
+```bash
+/bin/sh vpnsetup.sh
+```
 
 If problems with openvpn after install run the following iptable rules then restart ufw and openvpn
 
@@ -137,6 +149,8 @@ sudo restart ssh
 ```bash    
 ufw limit 22
 ufw allow 1194/udp
+ufw allow 500/udp
+ufw allow 4500/udp
 sudo nano /etc/default/ufw
 ```
 
