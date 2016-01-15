@@ -1,7 +1,25 @@
 # OpenVPN and Ipsec L2tp server
 The steps I take when setting up VPN server on Digital Ocean
 
-###Create SSH Keys on client computer
+##Table of Contents
+* [Create SSH Keys on client computer](#create-keys)
+* [Login after creating droplet](#new-login)
+* [Install OpenVPN](#install-ovpn)
+* [Install Libreswan](#install-libreswan)
+* [Disable root login](#disable-root)
+* [Enbale UFW](#enable-ufw)
+* [Install Dnsmasq](#dnsmasq)
+* [Allow multiple clients to connect with same ovpn file](#multiple-clients)
+* [Configure NTP Sync](#ntp)
+* [Enable Automatic Upgrades](#upgrades)
+* [Autostart OpenVPN on Debian client computer](#autostart)
+* [Install send only SSMTP service](#ssmtp)
+* [Setup fail2ban](#fail2ban)
+* [Configure Tripwire](#tripwire)
+* [Maintenance Commands](#misc)
+
+### <a name="create-keys"></a>Create SSH Keys on client computer
+
 Check for existing SSH keys
 
 ```bash
@@ -16,7 +34,8 @@ ssh-keygen -t rsa -b 4096 -C your_email@example.com
 
 The public key is now located in `/home/demo/.ssh/id_rsa.pub` The private key (identification) is now located in `/home/demo/.ssh/id_rsa`. Add your keys to the droplet when creating it
 
-###Login after creating droplet
+### <a name="new-login"></a>Login after creating droplet
+
 Login as root
 
 ```bash
@@ -64,7 +83,7 @@ exit
 
 Now you can log in as the new user
 
-###Install OpenVPN
+### <a name="install-ovpn"></a>Install OpenVPN
 
 ```bash    
 wget git.io/vpn --no-check-certificate -O openvpn-install.sh && bash openvpn-install.sh
@@ -76,7 +95,7 @@ Copy unified .ovpn to client computer
 scp -P root@server_ip_address:client.ovpn Downloads/
 ```
 
-###Install Libreswan
+### <a name="install-libreswan"></a>Install Libreswan
 
 ```bash
 https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
@@ -128,7 +147,7 @@ Insert these lines in /etc/rc.local:
 iptables-restore < /etc/iptables.rules
 ```
 
-###Disable root login
+###<a name="disable-root"></a>Disable root login
 
 ```bash
 sudo nano /etc/ssh/sshd_config
@@ -144,7 +163,7 @@ reload ssh
 sudo restart ssh
 ```
 
-###Enable UFW
+### <a name="enable-ufw"></a>Enable UFW
     
 ```bash    
 ufw limit 22
@@ -193,7 +212,7 @@ Your ufw rules should look similar to this
 #4500/udp (v6)              ALLOW IN    Anywhere (v6)
 ```
 
-###Install Dnsmasq
+### <a name="dnsmasq"></a>Install Dnsmasq
 
 Check your current nameserver configuration
 
@@ -220,7 +239,7 @@ Check again after cached
 dig digitalocean.com @localhost
 ```
 
-###Allow multiple clients to connect with same ovpn file. 
+### <a name="multiple-clients"></a>Allow multiple clients to connect with same ovpn file
 
 Note: It is safer to create multiple ovpn files
 
@@ -240,7 +259,7 @@ Restart OpenVPN service
 sudo service openvpn restart
 ```
 
-###Configure NTP sync
+### <a name="ntp"></a>Configure NTP sync
 
 ```bash
 sudo apt-get update
@@ -255,7 +274,7 @@ sudo ntpdate pool.ntp.org
 sudo service ntp start
 ```
 
-###Enable Automatic Upgrades
+###<a name="upgrades"></a>Enable Automatic Upgrades
 
 ```bash
 sudo apt-get install unattended-upgrades
@@ -275,7 +294,7 @@ APT::Periodic::AutocleanInterval "7";
 APT::Periodic::Unattended-Upgrade "1";
 ```
 
-###Autostart OpenVPN on Debian client computer
+### <a name="autostart"></a>Autostart OpenVPN on Debian client computer
 
 ```bash
 sudo nano /etc/default/openvpn
@@ -305,7 +324,7 @@ Check for tun0 interface
 ifconfig
 ```
 
-###Install send only SSMTP service
+### <a name="ssmtp"></a>Install send only SSMTP service
 
 ```bash
 sudo apt-get install ssmtp
@@ -327,7 +346,7 @@ rewriteDomain=gmail.com
 hostname=your_email@example.com
 ```
 
-Test sstp in terminal
+Test ssmtp in terminal
 
 ```bash
 ssmtp recipient_email@example.com
@@ -344,7 +363,7 @@ hello world!
 
 Note the blank line after the subject, everything after this line is the body of the email. When you're finished, press Ctrl-D. sSMTP may take a few seconds to send the message before closing.
 
-###Setup fail2ban
+### <a name="fail2ban"></a>Setup fail2ban
 
 ```bash
 sudo apt-get install fail2ban
@@ -405,7 +424,7 @@ Using the -aAX set of options, all attributes are preserved
 rsync -aAXv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} root@your_hostname:/ /home/demo/backup/
 ```
 
-###Configuring TripWire
+### <a name="tripwire"></a>Configure TripWire
 
 ```bash
 sudo apt-get install tripwire
@@ -588,7 +607,7 @@ To have tripwire run at 3:30am every day, we can place a line like this in our f
 30 3 * * * /usr/sbin/tripwire --check | mail -s "Tripwire report for `uname -n`" your_email@example.com
 ```
 
-###Maintenance Commands
+### <a name="misc"></a>Maintenance Commands
 
 Programs holding an open network socket
 
