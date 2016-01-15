@@ -220,7 +220,9 @@ Check again after cached
 dig digitalocean.com @localhost
 ```
 
-###Allow multiple clients to connect with same ovpn file. Better to create multiple ovpn files
+###Allow multiple clients to connect with same ovpn file. 
+
+Note: It is safer to create multiple ovpn files
 
 ```bash
 sudo nano /etc/openvpn/server.conf
