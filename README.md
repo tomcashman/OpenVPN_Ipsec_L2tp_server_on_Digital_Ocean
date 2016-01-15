@@ -76,6 +76,46 @@ Copy unified .ovpn to client computer
 scp -P root@server_ip_address:client.ovpn Downloads/
 ```
 
+###Install Libreswan
+
+```bash
+https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
+https://github.com/hwdsl2/setup-ipsec-vpn
+```
+
+Open ports 500 and 4500 before running script
+
+```bash
+PSK:your_private_key
+Username:your_username
+Password:your_password
+```
+
+Change IP tables in script from port 22 to non-standard port for ssh
+
+If problems with openvpn after install run the following iptable rules then restart ufw and openvpn
+
+```bash
+sudo iptables -I INPUT -p udp --dport 1194 -j ACCEPT
+sudo iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT
+sudo iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo service ufw stop
+sudo service ufw start
+sudo /etc/init.d/openvpn restart
+```
+
+I remedied the above problems with iptables persistence by running the following commands. Shouldn't have to run the commands anymore.
+
+```bash
+sudo iptables-save > /etc/iptables.rules
+```
+
+Insert these lines in /etc/rc.local:
+
+```bash
+iptables-restore < /etc/iptables.rules
+```
+
 ###Disable root login
 
 ```bash
@@ -691,44 +731,4 @@ How to scan top 8000 ports using nmap
 
 ```bash
 nmap -vv --top-ports 8000 your_hostname
-```
-
-###Install Libreswan
-
-```bash
-https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
-https://github.com/hwdsl2/setup-ipsec-vpn
-```
-
-Open ports 500 and 4500 before running script
-
-```bash
-PSK:your_private_key
-Username:your_username
-Password:your_password
-```
-
-Change IP tables in script from port 22 to non-standard port for ssh
-
-If problems with openvpn after install run the following iptable rules then restart ufw and openvpn
-
-```bash
-sudo iptables -I INPUT -p udp --dport 1194 -j ACCEPT
-sudo iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT
-sudo iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-sudo service ufw stop
-sudo service ufw start
-sudo /etc/init.d/openvpn restart
-```
-
-I remedied the above problems with iptables persistence by running the following commands. Shouldn't have to run the commands anymore.
-
-```bash
-sudo iptables-save > /etc/iptables.rules
-```
-
-Insert these lines in /etc/rc.local:
-
-```bash
-iptables-restore < /etc/iptables.rules
 ```
