@@ -5,7 +5,7 @@ The steps I take when setting up VPN server on Digital Ocean
 Check for existing SSH keys
 
 ```bash
-    ls -al ~/.ssh
+ls -al ~/.ssh
 ```
 
 Generate new SSH key
