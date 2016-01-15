@@ -85,6 +85,10 @@ Now you can log in as the new user
 
 ### <a name="install-ovpn"></a>Install OpenVPN
 
+```bash
+https://github.com/Nyr/openvpn-install
+```
+
 ```bash    
 wget git.io/vpn --no-check-certificate -O openvpn-install.sh && bash openvpn-install.sh
 ```
