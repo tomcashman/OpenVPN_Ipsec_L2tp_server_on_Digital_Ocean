@@ -86,7 +86,7 @@ Now you can log in as the new user
 ### <a name="install-ovpn"></a>Install OpenVPN
 
 ```bash
-https://github.com/Nyr/openvpn-install
+#https://github.com/Nyr/openvpn-install
 ```
 
 ```bash    
@@ -102,8 +102,8 @@ scp -P root@server_ip_address:client.ovpn Downloads/
 ### <a name="install-libreswan"></a>Install Libreswan
 
 ```bash
-https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
-https://github.com/hwdsl2/setup-ipsec-vpn
+#https://blog.ls20.com/ipsec-l2tp-vpn-auto-setup-for-ubuntu-12-04-on-amazon-ec2/
+#https://github.com/hwdsl2/setup-ipsec-vpn
 ```
 
 Open ports 500 and 4500 before running script
