@@ -293,10 +293,10 @@ To: recipient_email@example.com
 From: myemailaddress@gmail.com
 Subject: test email
 
-hello world!
+test email
 ```
 
-Note the blank line after the subject, everything after this line is the body of the email. When you're finished, press Ctrl-D. sSMTP may take a few seconds to send the message before closing.
+Insert blank line after `Subject:`. This is the body of the email. Press `CTRL-D` to send message. Sometimes I need to press `CTRL-D` a second time after about 10 seconds if the message is not sent.
 
 ### <a name="upgrades"></a>Enable Automatic Upgrades
 
@@ -305,16 +305,14 @@ sudo apt-get install unattended-upgrades
 sudo dpkg-reconfigure unattended-upgrades
 ```
 
-Update the 10 periodic file. "1" means that it will upgrade every day
+Update the 10 periodic file. `1` means that it will upgrade every day
 
 ```bash
-/etc/apt/apt.conf.d/10periodic
-```
+sudo nano /etc/apt/apt.conf.d/10periodic
 
-```bash
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Download-Upgradeable-Packages "1";
-APT::Periodic::AutocleanInterval "7";
+APT::Periodic::AutocleanInterval "1";
 APT::Periodic::Unattended-Upgrade "1";
 ```
 
@@ -328,15 +326,11 @@ sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 ```bash
 sudo nano /etc/fail2ban/jail.local
 
-# "ignoreip" can be an IP address, a CIDR mask or a DNS host
+# "ignoreip" can be an IP address, a CIDR mask or a DNS host. Use space separator to add more than one IP
 ignoreip = 127.0.0.⅛
 bantime  = 600
 maxretry = 3
-```
 
-Setup ssmtp settings with following settings
-
-```bash
 destemail = your_email@example.com
 sendername = Fail2Ban
 mta = sendmail
@@ -344,7 +338,7 @@ mta = sendmail
 action = %(action_mwl)s
 ```
 
-Jails we can initially set to true without any errors
+Jails which can be initially set to true without any errors
 
 ```bash
 #ssh
@@ -365,7 +359,7 @@ sudo service fail2ban stop
 sudo service fail2ban start
 ```
 
-Check list of banned IP for fail2ban
+Check list of banned IPs for fail2ban
 
 ```bash
 fail2ban-client status ssh
@@ -390,7 +384,7 @@ rsync -aAXv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/
 sudo apt-get install tripwire
 ```
 
-Set the Site-Key passphrase and the Local-Key passphrase
+Set the `Site-Key` and `Local-Key` passphrase
 
 Create policy file
 
@@ -405,7 +399,7 @@ sudo tripwire --init
 sudo sh -c 'tripwire --check | grep Filename > /etc/tripwire/test_results'
 ```
 
-Entries may look like this:
+Entries may look like this
 
 ```bash
 less /etc/tripwire/test_results
@@ -447,7 +441,7 @@ Edit text policy in editor
 sudo nano /etc/tripwire/twpol.txt
 ```
 
-Search for each of the files that were returned in the test_results file. Comment out lines that match.
+Search for each of the files that were returned in the `test_results` file. Comment out lines that match.
 
 ```bash
     {
@@ -460,7 +454,7 @@ Search for each of the files that were returned in the test_results file. Commen
         . . .
 ```
 
-Comment out /var/run and /var/lock lines so that system does not flag normal filesystem changes by services:
+Comment out `/var/run` and `/var/lock` lines
 
 ```bash
     (
@@ -476,27 +470,27 @@ Comment out /var/run and /var/lock lines so that system does not flag normal fil
 
 Save and close
 
-Implement by re-creating encrypted policy file that tripwire reads
+Re-create encrypted policy file
 
 ```bash
 sudo twadmin -m P /etc/tripwire/twpol.txt
 ```
 
-Reinitialize the database to implement policy
+Re-initialize database
 
 ```bash
 sudo tripwire --init
 ```
 
-Warnings should be gone. If there are still warnings, continue editing /etc/tripwire/twpol.txt file until gone.
+Warnings should be gone. If there are still warnings, continue editing `/etc/tripwire/twpol.txt` file until gone.
 
-The basic syntax for a check is
+Check current status of warnings
 
 ```bash
 sudo tripwire --check
 ```
 
-Delete the test_results file that we created
+Delete `test_results` file that was just created
 
 ```bash 
 sudo rm /etc/tripwire/test_results
@@ -539,29 +533,29 @@ Check report that was sent with the email
 sudo tripwire --check --interactive
 ```
 
-Remove “x” from box if not ok with change
+Remove `x` from box if not ok with change. Re-run above command to reset warning after each email received
 
 Automate Tripwire with Cron
 
-Check to see if root already has a crontab by issuing this command:
+Check if root already has crontab by issuing this command
 
 ```bash
 sudo crontab -l
 ```
 
-If a crontab is present, you should pipe it into a file to back it up:
+If crontab is present, pipe into file to back it up
 
 ```bash
 sudo sh -c 'crontab -l > crontab.bad'
 ```
 
-Afterwards, we can edit the crontab by typing:
+Edit crontab
 
 ```bash
 sudo crontab -e
 ```
 
-To have tripwire run at 3:30am every day, we can place a line like this in our file:
+To have tripwire run at 3:30am every day, insert this line
 
 ```bash
 30 3 * * * /usr/sbin/tripwire --check | mail -s "Tripwire report for `uname -n`" your_email@example.com
@@ -579,7 +573,7 @@ Uncomment:
 AUTOSTART=all
 ```
 
-Copy client.ovpn to /etc/openvpn/client.conf by renaming file
+Copy `client.ovp`n to `/etc/openvpn/client.conf` by renaming file
 
 ```bash
 gksu -w -u root gksu thunar
@@ -591,7 +585,7 @@ Reload openvpn configuration
 /etc/init.d/openvpn reload /etc/openvpn/client.conf
 ```
 
-Check for tun0 interface
+Check for `tun0` interface
 
 ```bash
 ifconfig
@@ -619,7 +613,7 @@ sudo service openvpn restart
 
 ### <a name="misc"></a>Maintenance Commands
 
-Programs holding an open network socket
+Programs holding open network socket
 
 ```bash
 lsof -i
