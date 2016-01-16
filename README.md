@@ -78,6 +78,7 @@ Paste in public key while in nano
 
 ```bash
 sudo nano .ssh/authorized_keys
+
 chmod 600 .ssh/authorized_keys
 ```
 
@@ -95,6 +96,7 @@ It is possible to change SSH port to anything you like as long as it doesn't con
 
 ```bash
 sudo nano /etc/ssh/sshd_config
+
 Port 22
 PermitRootLogin without-password
 reload ssh
@@ -114,6 +116,7 @@ Change from DROP to ACCEPT
 
 ```bash
 sudo nano /etc/default/ufw
+
 DEFAULT_FORWARD_POLICY="ACCEPT"
 ```
 
@@ -121,6 +124,7 @@ Add these lines to the before.rules file
 
 ```bash
 sudo nano /etc/ufw/before.rules
+
 # START OPENVPN RULES
 # NAT table rules
 *nat
@@ -176,10 +180,11 @@ scp -P root@server_ip_address:client.ovpn Downloads/
 
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
-nano -w vpnsetup.sh
 ```
 
 ```bash
+sudo nano -w vpnsetup.sh
+
 PSK:your_private_key
 Username:your_username
 Password:your_password
@@ -243,6 +248,9 @@ dig digitalocean.com @localhost
 
 ```bash
 sudo apt-get install ntp
+```
+
+```bash
 sudo dpkg-reconfigure tzdata
 sudo ntpdate pool.ntp.org
 sudo service ntp start
@@ -252,10 +260,11 @@ sudo service ntp start
 
 ```bash
 sudo apt-get install ssmtp
-sudo nano /etc/ssmtp/ssmtp.conf
 ```
 
 ```bash
+sudo nano /etc/ssmtp/ssmtp.conf
+
 #root=postmaster
 root=your_email@example.com
 #mailhub=mail
@@ -312,10 +321,11 @@ APT::Periodic::Unattended-Upgrade "1";
 ```bash
 sudo apt-get install fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sudo nano /etc/fail2ban/jail.local
 ```
 
 ```bash
+sudo nano /etc/fail2ban/jail.local
+
 # "ignoreip" can be an IP address, a CIDR mask or a DNS host
 ignoreip = 127.0.0.⅛
 bantime  = 600
