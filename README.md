@@ -42,6 +42,12 @@ Login as root
 ssh root@server_ip_address
 ```
 
+Upgrade system
+
+```bash
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
+```
+
 Create new user
 
 ```bash
