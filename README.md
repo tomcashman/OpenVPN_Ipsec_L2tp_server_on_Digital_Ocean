@@ -4,9 +4,9 @@ The steps I take when setting up VPN server on Digital Ocean
 ##Table of Contents
 * [Create SSH Keys on client computer](#create-keys)
 * [Login after creating droplet](#new-login)
+* [Disable root login](#disable-root)
 * [Install OpenVPN](#install-ovpn)
 * [Install Libreswan](#install-libreswan)
-* [Disable root login](#disable-root)
 * [Enbale UFW](#enable-ufw)
 * [Install Dnsmasq](#dnsmasq)
 * [Allow multiple clients to connect with same ovpn file](#multiple-clients)
@@ -83,6 +83,22 @@ exit
 
 Now you can log in as the new user
 
+###<a name="disable-root"></a>Disable root login
+
+```bash
+sudo nano /etc/ssh/sshd_config
+PermitRootLogin without-password
+PasswordAuthentication no
+```
+
+To change SSH port - **Allow new port in ufw rules below and restart ufw before restarting ssh**
+
+```bash
+Port 22
+reload ssh
+sudo restart ssh
+```
+
 ### <a name="install-ovpn"></a>Install OpenVPN
 
 ```bash
@@ -149,22 +165,6 @@ Insert these lines in /etc/rc.local:
 
 ```bash
 iptables-restore < /etc/iptables.rules
-```
-
-###<a name="disable-root"></a>Disable root login
-
-```bash
-sudo nano /etc/ssh/sshd_config
-PermitRootLogin without-password
-PasswordAuthentication no
-```
-
-To change SSH port - **Allow new port in ufw rules below and restart ufw before restarting ssh**
-
-```bash
-Port 22
-reload ssh
-sudo restart ssh
 ```
 
 ### <a name="enable-ufw"></a>Enable UFW
