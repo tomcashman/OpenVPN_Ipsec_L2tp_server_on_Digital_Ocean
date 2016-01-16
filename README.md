@@ -9,7 +9,7 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install OpenVPN](#install-ovpn)
 * [Install Libreswan](#install-libreswan)
 * [Install Dnsmasq](#dnsmasq)
-* [Configure NTP Sync](#ntp)
+* [Install NTP](#ntp)
 * [Enable Automatic Upgrades](#upgrades)
 * [Autostart OpenVPN on Debian client computer](#autostart)
 * [Install send only SSMTP service](#ssmtp)
@@ -239,7 +239,7 @@ Check again after cached
 dig digitalocean.com @localhost
 ```
 
-### <a name="ntp"></a>Configure NTP sync
+### <a name="ntp"></a>Install NTP
 
 ```bash
 sudo apt-get install ntp
