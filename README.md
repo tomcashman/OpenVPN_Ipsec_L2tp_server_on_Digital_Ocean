@@ -4,10 +4,10 @@ Steps I take when setting up a VPN server on Digital Ocean
 ##Table of Contents
 * [Create SSH Keys on client computer](#create-keys)
 * [Login after creating droplet](#new-login)
-* [Disable root login](#disable-root)
+* [Disable root login and change SSH port](#disable-root)
+* [Enbale UFW](#enable-ufw)
 * [Install OpenVPN](#install-ovpn)
 * [Install Libreswan](#install-libreswan)
-* [Enbale UFW](#enable-ufw)
 * [Install Dnsmasq](#dnsmasq)
 * [Allow multiple clients to connect with same ovpn file](#multiple-clients)
 * [Configure NTP Sync](#ntp)
@@ -83,20 +83,66 @@ exit
 
 Login as new user
 
-###<a name="disable-root"></a>Disable root login
+###<a name="disable-root"></a>Disable root login and change SSH port
+
+It is possible to change SSH port to anything you like as long as it doesn't conflict with other active ports. Port 22 is written below, but any port can be used. **Allow new port in ufw rules below and restart ufw before restarting ssh**
 
 ```bash
 sudo nano /etc/ssh/sshd_config
-PermitRootLogin without-password
-PasswordAuthentication no
-```
-
-Change SSH port. It is possible to change SSH port to anything you like as long as it doesn't conflict with other active ports. Port 22 is written below, but any port can be used. **Allow new port in ufw rules below and restart ufw before restarting ssh**
-
-```bash
 Port 22
+PermitRootLogin without-password
 reload ssh
 sudo restart ssh
+```
+
+### <a name="enable-ufw"></a>Enable UFW
+    
+```bash    
+ufw limit 22
+ufw allow 1194/udp
+ufw allow 500/udp
+ufw allow 4500/udp
+```
+
+Change from DROP to ACCEPT
+
+```bash
+sudo nano /etc/default/ufw
+DEFAULT_FORWARD_POLICY="ACCEPT"
+```
+
+Add these lines to the before.rules file
+
+```bash
+sudo nano /etc/ufw/before.rules
+# START OPENVPN RULES
+# NAT table rules
+*nat
+:POSTROUTING ACCEPT [0:0]
+# Allow traffic from OpenVPN client to eth0
+-A POSTROUTING -s 10.8.0.0/8 -o eth0 -j MASQUERADE
+COMMIT
+# END OPENVPN RULES
+```
+
+UFW rules should look similar to this
+
+```bash
+#Status: active
+#Logging: on (low)
+#Default: deny (incoming), allow (outgoing), allow (routed)
+#New profiles: skip
+
+#To                         Action      From
+#--                         ------      ----
+#22                         LIMIT IN    Anywhere
+#1194/udp                   ALLOW IN    Anywhere
+#500/udp                    ALLOW IN    Anywhere
+#4500/udp                   ALLOW IN    Anywhere
+#1194/udp (v6)              ALLOW IN    Anywhere (v6)
+#22 (v6)                    LIMIT IN    Anywhere (v6)
+#500/udp (v6)               ALLOW IN    Anywhere (v6)
+#4500/udp (v6)              ALLOW IN    Anywhere (v6)
 ```
 
 ### <a name="install-ovpn"></a>Install OpenVPN
@@ -122,13 +168,6 @@ scp -P root@server_ip_address:client.ovpn Downloads/
 #https://github.com/hwdsl2/setup-ipsec-vpn
 ```
 
-Open ports 500/udp and 4500/udp before running script
-
-```bash
-ufw allow 500/udp
-ufw allow 4500/udp
-```
-
 ```bash
 wget https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/vpnsetup.sh -O vpnsetup.sh
 nano -w vpnsetup.sh
@@ -144,7 +183,7 @@ Password:your_password
 /bin/sh vpnsetup.sh
 ```
 
-If problems with openvpn after install run the following iptable rules then restart ufw and openvpn
+Run following commands if OpenVPN doesn't work after reboot
 
 ```bash
 sudo iptables -I INPUT -p udp --dport 1194 -j ACCEPT
@@ -155,7 +194,7 @@ sudo service ufw start
 sudo /etc/init.d/openvpn restart
 ```
 
-I remedied the above problems with iptables persistence by running the following commands. Shouldn't have to run the commands anymore.
+Enable Iptables persistence so above commands should no longer be needed
 
 ```bash
 sudo iptables-save > /etc/iptables.rules
@@ -167,58 +206,9 @@ Insert these lines in /etc/rc.local:
 iptables-restore < /etc/iptables.rules
 ```
 
-### <a name="enable-ufw"></a>Enable UFW
-    
-```bash    
-ufw limit 22
-ufw allow 1194/udp
-ufw allow 500/udp
-ufw allow 4500/udp
-sudo nano /etc/default/ufw
-```
-
-Change from DROP to ACCEPT
-
-```bash
-DEFAULT_FORWARD_POLICY="ACCEPT"
-sudo nano /etc/ufw/before.rules
-```
-
-Add these lines to the before.rules file
-
-```bash
-# START OPENVPN RULES
-# NAT table rules
-*nat
-:POSTROUTING ACCEPT [0:0]
-# Allow traffic from OpenVPN client to eth0
--A POSTROUTING -s 10.8.0.0/8 -o eth0 -j MASQUERADE
-COMMIT
-# END OPENVPN RULES
-```
-Your ufw rules should look similar to this
-
-```bash
-#Status: active
-#Logging: on (low)
-#Default: deny (incoming), allow (outgoing), allow (routed)
-#New profiles: skip
-
-#To                         Action      From
-#--                         ------      ----
-#22                         LIMIT IN    Anywhere
-#1194/udp                   ALLOW IN    Anywhere
-#500/udp                    ALLOW IN    Anywhere
-#4500/udp                   ALLOW IN    Anywhere
-#1194/udp (v6)              ALLOW IN    Anywhere (v6)
-#22 (v6)                    LIMIT IN    Anywhere (v6)
-#500/udp (v6)               ALLOW IN    Anywhere (v6)
-#4500/udp (v6)              ALLOW IN    Anywhere (v6)
-```
-
 ### <a name="dnsmasq"></a>Install Dnsmasq
 
-Check your current nameserver configuration
+Check current nameserver configuration
 
 ```bash
 cat /etc/resolv.conf
@@ -266,19 +256,13 @@ sudo service openvpn restart
 ### <a name="ntp"></a>Configure NTP sync
 
 ```bash
-sudo apt-get update
 sudo apt-get install ntp
-```
-
-Configure timezone to UTC
-
-```bash    
 sudo dpkg-reconfigure tzdata
 sudo ntpdate pool.ntp.org
 sudo service ntp start
 ```
 
-###<a name="upgrades"></a>Enable Automatic Upgrades
+### <a name="upgrades"></a>Enable Automatic Upgrades
 
 ```bash
 sudo apt-get install unattended-upgrades
