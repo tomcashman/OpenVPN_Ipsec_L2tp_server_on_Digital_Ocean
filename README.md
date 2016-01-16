@@ -9,13 +9,13 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install OpenVPN](#install-ovpn)
 * [Install Libreswan](#install-libreswan)
 * [Install Dnsmasq](#dnsmasq)
-* [Allow multiple clients to connect with same ovpn file](#multiple-clients)
 * [Configure NTP Sync](#ntp)
 * [Enable Automatic Upgrades](#upgrades)
 * [Autostart OpenVPN on Debian client computer](#autostart)
 * [Install send only SSMTP service](#ssmtp)
 * [Setup fail2ban](#fail2ban)
 * [Configure Tripwire](#tripwire)
+* [Allow multiple clients to connect with same ovpn file](#multiple-clients)
 * [Maintenance Commands](#misc)
 
 ### <a name="create-keys"></a>Create SSH Keys on client computer
@@ -237,26 +237,6 @@ Check again after cached
 
 ```bash
 dig digitalocean.com @localhost
-```
-
-### <a name="multiple-clients"></a>Allow multiple clients to connect with same ovpn file
-
-Note: It is safer to create multiple ovpn files
-
-```bash
-sudo nano /etc/openvpn/server.conf
-```
-
-Uncomment following line:
-
-```bash
-duplicate-n
-```
-
-Restart OpenVPN service
-
-```bash
-sudo service openvpn restart
 ```
 
 ### <a name="ntp"></a>Configure NTP sync
@@ -603,6 +583,26 @@ To have tripwire run at 3:30am every day, we can place a line like this in our f
 
 ```bash
 30 3 * * * /usr/sbin/tripwire --check | mail -s "Tripwire report for `uname -n`" your_email@example.com
+```
+
+### <a name="multiple-clients"></a>Allow multiple clients to connect with same ovpn file
+
+Note: It is safer to create multiple ovpn files
+
+```bash
+sudo nano /etc/openvpn/server.conf
+```
+
+Uncomment following line:
+
+```bash
+duplicate-n
+```
+
+Restart OpenVPN service
+
+```bash
+sudo service openvpn restart
 ```
 
 ### <a name="misc"></a>Maintenance Commands
