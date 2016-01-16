@@ -11,10 +11,10 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install Dnsmasq](#dnsmasq)
 * [Install NTP](#ntp)
 * [Enable Automatic Upgrades](#upgrades)
-* [Autostart OpenVPN on Debian client computer](#autostart)
 * [Install send only SSMTP service](#ssmtp)
 * [Setup fail2ban](#fail2ban)
 * [Configure Tripwire](#tripwire)
+* [Autostart OpenVPN on Debian client computer](#autostart)
 * [Allow multiple clients to connect with same ovpn file](#multiple-clients)
 * [Maintenance Commands](#misc)
 
@@ -266,36 +266,6 @@ APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "7";
 APT::Periodic::Unattended-Upgrade "1";
-```
-
-### <a name="autostart"></a>Autostart OpenVPN on Debian client computer
-
-```bash
-sudo nano /etc/default/openvpn
-```
-
-Uncomment:
-
-```bash
-AUTOSTART=all
-```
-
-Copy client.ovpn to /etc/openvpn/client.conf by renaming file
-
-```bash
-gksu -w -u root gksu thunar
-```
-
-Reload openvpn configuration
-
-```bash
-/etc/init.d/openvpn reload /etc/openvpn/client.conf
-```
-
-Check for tun0 interface
-
-```bash
-ifconfig
 ```
 
 ### <a name="ssmtp"></a>Install send only SSMTP service
@@ -583,6 +553,36 @@ To have tripwire run at 3:30am every day, we can place a line like this in our f
 
 ```bash
 30 3 * * * /usr/sbin/tripwire --check | mail -s "Tripwire report for `uname -n`" your_email@example.com
+```
+
+### <a name="autostart"></a>Autostart OpenVPN on Debian client computer
+
+```bash
+sudo nano /etc/default/openvpn
+```
+
+Uncomment:
+
+```bash
+AUTOSTART=all
+```
+
+Copy client.ovpn to /etc/openvpn/client.conf by renaming file
+
+```bash
+gksu -w -u root gksu thunar
+```
+
+Reload openvpn configuration
+
+```bash
+/etc/init.d/openvpn reload /etc/openvpn/client.conf
+```
+
+Check for tun0 interface
+
+```bash
+ifconfig
 ```
 
 ### <a name="multiple-clients"></a>Allow multiple clients to connect with same ovpn file
