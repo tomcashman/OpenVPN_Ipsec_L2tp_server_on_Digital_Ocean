@@ -1,5 +1,5 @@
 # OpenVPN and Ipsec L2tp server
-The steps I take when setting up VPN server on Digital Ocean
+Steps I take when setting up a VPN server on Digital Ocean
 
 ##Table of Contents
 * [Create SSH Keys on client computer](#create-keys)
@@ -32,7 +32,7 @@ Generate new SSH key
 ssh-keygen -t rsa -b 4096 -C your_email@example.com
 ```
 
-The public key is now located in `/home/demo/.ssh/id_rsa.pub` The private key (identification) is now located in `/home/demo/.ssh/id_rsa`. Add your keys to the droplet when creating it
+Public key is now located in `/home/demo/.ssh/id_rsa.pub`. Private key is now located in `/home/demo/.ssh/id_rsa`. While creating new droplet, add these keys.
 
 ### <a name="new-login"></a>Login after creating droplet
 
@@ -60,7 +60,7 @@ Add public key authentication for new user
 ssh-keygen -t rsa -b 4096 -C your_email@example.com
 ```
 
-Manually install the key. Copy the public key by `CTRL-C` or `(cat ~/.ssh/id_rsa.pub)`
+Manually install key. Copy public key by `CTRL-C` or `(cat ~/.ssh/id_rsa.pub)`
 
 ```bash
 su - demo
@@ -75,13 +75,13 @@ sudo nano .ssh/authorized_keys
 chmod 600 .ssh/authorized_keys
 ```
 
-Exit will return to root
+Exit returns to root
 
 ```bash
 exit
 ```
 
-Now you can log in as the new user
+Login as new user
 
 ###<a name="disable-root"></a>Disable root login
 
@@ -91,7 +91,7 @@ PermitRootLogin without-password
 PasswordAuthentication no
 ```
 
-To change SSH port - **Allow new port in ufw rules below and restart ufw before restarting ssh**
+Change SSH port. It is possible to change SSH port to anything you like as long as it doesn't conflict with other active ports. Port 22 is written below, but any port can be used. **Allow new port in ufw rules below and restart ufw before restarting ssh**
 
 ```bash
 Port 22
@@ -122,7 +122,7 @@ scp -P root@server_ip_address:client.ovpn Downloads/
 #https://github.com/hwdsl2/setup-ipsec-vpn
 ```
 
-Open ports 500 and 4500 before running script
+Open ports 500/udp and 4500/udp before running script
 
 ```bash
 ufw allow 500/udp
