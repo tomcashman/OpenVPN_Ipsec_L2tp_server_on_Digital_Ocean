@@ -60,13 +60,15 @@ Give root privileges
 gpasswd -a demo sudo
 ```
 
-Add public key authentication for new user
+Add public key authentication for new user using client computer. Call new public key id_rsa_demo
 
 ```bash
 ssh-keygen -t rsa -b 4096 -C your_email@example.com
 ```
 
-Manually install key. Copy public key by `CTRL-C` or `(cat ~/.ssh/id_rsa.pub)`
+Copy contents of public key by `CTRL-C` or `(cat ~/.ssh/id_rsa_demo.pub)`
+
+Manually install public key on server
 
 ```bash
 su - demo
