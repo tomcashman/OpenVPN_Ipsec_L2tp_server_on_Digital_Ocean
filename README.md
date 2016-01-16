@@ -11,9 +11,9 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install Dnsmasq](#dnsmasq)
 * [Install NTP](#ntp)
 * [Install send only SSMTP service](#ssmtp)
+* [Install fail2ban](#fail2ban)
+* [Install Tripwire](#tripwire)
 * [Enable Automatic Upgrades](#upgrades)
-* [Setup fail2ban](#fail2ban)
-* [Configure Tripwire](#tripwire)
 * [Autostart OpenVPN on Debian client computer](#autostart)
 * [Allow multiple clients to connect with same ovpn file](#multiple-clients)
 * [Maintenance Commands](#misc)
@@ -298,25 +298,7 @@ test email
 
 Insert blank line after `Subject:`. This is the body of the email. Press `CTRL-D` to send message. Sometimes I need to press `CTRL-D` a second time after about 10 seconds if the message is not sent.
 
-### <a name="upgrades"></a>Enable Automatic Upgrades
-
-```bash
-sudo apt-get install unattended-upgrades
-sudo dpkg-reconfigure unattended-upgrades
-```
-
-Update the 10 periodic file. `1` means that it will upgrade every day
-
-```bash
-sudo nano /etc/apt/apt.conf.d/10periodic
-
-APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Download-Upgradeable-Packages "1";
-APT::Periodic::AutocleanInterval "1";
-APT::Periodic::Unattended-Upgrade "1";
-```
-
-### <a name="fail2ban"></a>Setup fail2ban
+### <a name="fail2ban"></a>Install fail2ban
 
 ```bash
 sudo apt-get install fail2ban
@@ -374,7 +356,7 @@ Using the -aAX set of options, all attributes are preserved
 rsync -aAXv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} root@your_hostname:/ /home/demo/backup/
 ```
 
-### <a name="tripwire"></a>Configure TripWire
+### <a name="tripwire"></a>Install TripWire
 
 ```bash
 #https://www.digitalocean.com/community/tutorials/how-to-use-tripwire-to-detect-server-intrusions-on-an-ubuntu-vps
@@ -559,6 +541,24 @@ To have tripwire run at 3:30am every day, insert this line
 
 ```bash
 30 3 * * * /usr/sbin/tripwire --check | mail -s "Tripwire report for `uname -n`" your_email@example.com
+```
+
+### <a name="upgrades"></a>Enable Automatic Upgrades
+
+```bash
+sudo apt-get install unattended-upgrades
+sudo dpkg-reconfigure unattended-upgrades
+```
+
+Update the 10 periodic file. `1` means that it will upgrade every day
+
+```bash
+sudo nano /etc/apt/apt.conf.d/10periodic
+
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "1";
+APT::Periodic::Unattended-Upgrade "1";
 ```
 
 ### <a name="autostart"></a>Autostart OpenVPN on Debian client computer
