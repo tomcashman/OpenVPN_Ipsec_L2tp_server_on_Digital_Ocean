@@ -10,8 +10,8 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install Libreswan](#install-libreswan)
 * [Install Dnsmasq](#dnsmasq)
 * [Install NTP](#ntp)
-* [Enable Automatic Upgrades](#upgrades)
 * [Install send only SSMTP service](#ssmtp)
+* [Enable Automatic Upgrades](#upgrades)
 * [Setup fail2ban](#fail2ban)
 * [Configure Tripwire](#tripwire)
 * [Autostart OpenVPN on Debian client computer](#autostart)
@@ -248,26 +248,6 @@ sudo ntpdate pool.ntp.org
 sudo service ntp start
 ```
 
-### <a name="upgrades"></a>Enable Automatic Upgrades
-
-```bash
-sudo apt-get install unattended-upgrades
-sudo dpkg-reconfigure unattended-upgrades
-```
-
-Update the 10 periodic file. "1" means that it will upgrade every day
-
-```bash
-/etc/apt/apt.conf.d/10periodic
-```
-
-```bash
-APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Download-Upgradeable-Packages "1";
-APT::Periodic::AutocleanInterval "7";
-APT::Periodic::Unattended-Upgrade "1";
-```
-
 ### <a name="ssmtp"></a>Install send only SSMTP service
 
 ```bash
@@ -306,6 +286,26 @@ hello world!
 ```
 
 Note the blank line after the subject, everything after this line is the body of the email. When you're finished, press Ctrl-D. sSMTP may take a few seconds to send the message before closing.
+
+### <a name="upgrades"></a>Enable Automatic Upgrades
+
+```bash
+sudo apt-get install unattended-upgrades
+sudo dpkg-reconfigure unattended-upgrades
+```
+
+Update the 10 periodic file. "1" means that it will upgrade every day
+
+```bash
+/etc/apt/apt.conf.d/10periodic
+```
+
+```bash
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
+```
 
 ### <a name="fail2ban"></a>Setup fail2ban
 
