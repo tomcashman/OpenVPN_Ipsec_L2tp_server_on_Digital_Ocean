@@ -11,7 +11,7 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install Dnsmasq](#dnsmasq)
 * [Install NTP](#ntp)
 * [Install send only SSMTP service](#ssmtp)
-* [Install fail2ban](#fail2ban)
+* [Install Fail2ban](#fail2ban)
 * [Install Tripwire](#tripwire)
 * [Enable Automatic Upgrades](#upgrades)
 * [Autostart OpenVPN on Debian client computer](#autostart)
@@ -298,7 +298,7 @@ test email
 
 Insert blank line after `Subject:`. This is the body of the email. Press `CTRL-D` to send message. Sometimes I need to press `CTRL-D` a second time after about 10 seconds if the message is not sent.
 
-### <a name="fail2ban"></a>Install fail2ban
+### <a name="fail2ban"></a>Install Fail2ban
 
 ```bash
 sudo apt-get install fail2ban
