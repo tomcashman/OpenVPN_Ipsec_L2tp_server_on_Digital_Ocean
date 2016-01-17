@@ -334,14 +334,14 @@ Jails which can be initially set to true without any errors
 #dovecot
 ```
 
-Restart fail2ban
+Restart Fail2ban
 
 ```bash
 sudo service fail2ban stop
 sudo service fail2ban start
 ```
 
-Check list of banned IPs for fail2ban
+Check list of banned IPs for Fail2ban
 
 ```bash
 fail2ban-client status ssh
