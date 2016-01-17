@@ -2,7 +2,7 @@
 Steps I take when setting up a VPN server on Digital Ocean
 
 ##Table of Contents
-* [Create SSH Keys on client computer](#create-keys)
+* [Create SSH keys on client computer](#create-keys)
 * [Login after creating droplet](#new-login)
 * [Disable root login and change SSH port](#disable-root)
 * [Enbale UFW](#enable-ufw)
@@ -13,12 +13,12 @@ Steps I take when setting up a VPN server on Digital Ocean
 * [Install send only SSMTP service](#ssmtp)
 * [Install Fail2ban](#fail2ban)
 * [Install Tripwire](#tripwire)
-* [Enable Automatic Upgrades](#upgrades)
+* [Enable Automatic upgrades](#upgrades)
 * [Autostart OpenVPN on Debian client computer](#autostart)
 * [Allow multiple clients to connect with same ovpn file](#multiple-clients)
-* [Maintenance Commands](#misc)
+* [Maintenance commands](#misc)
 
-### <a name="create-keys"></a>Create SSH Keys on client computer
+### <a name="create-keys"></a>Create SSH keys on client computer
 
 Check for existing SSH keys
 
@@ -122,7 +122,7 @@ sudo nano /etc/default/ufw
 DEFAULT_FORWARD_POLICY="ACCEPT"
 ```
 
-Add these lines to the before.rules file
+Add these lines to the `before.rules` file
 
 ```bash
 sudo nano /etc/ufw/before.rules
@@ -167,7 +167,7 @@ UFW rules should look similar to this
 wget git.io/vpn --no-check-certificate -O openvpn-install.sh && bash openvpn-install.sh
 ```
 
-Copy unified .ovpn to client computer
+Copy unified `.ovpn` to client computer
 
 ```bash
 scp -P root@server_ip_address:client.ovpn Downloads/
@@ -205,17 +205,13 @@ sudo iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo service ufw stop
 sudo service ufw start
 sudo /etc/init.d/openvpn restart
-```
 
-Enable Iptables persistence so above commands should no longer be needed
-
-```bash
 sudo iptables-save > /etc/iptables.rules
 ```
 
-Insert these lines in /etc/rc.local:
-
 ```bash
+sudo nano /etc/rc.local
+
 iptables-restore < /etc/iptables.rules
 ```
 
@@ -237,13 +233,13 @@ cat /etc/resolv.conf
 Take note of query time
 
 ```bash
-dig digitalocean.com @localhost
+dig duckduckgo.com @localhost
 ```
 
 Check again after cached
 
 ```bash
-dig digitalocean.com @localhost
+dig duckduckgo.com @localhost
 ```
 
 ### <a name="ntp"></a>Install NTP
@@ -287,7 +283,8 @@ Test ssmtp in terminal
 ssmtp recipient_email@example.com
 ```
 
-Format message as below:
+Format message as below
+
 ```bash
 To: recipient_email@example.com
 From: myemailaddress@gmail.com
@@ -296,7 +293,7 @@ Subject: test email
 test email
 ```
 
-Insert blank line after `Subject:`. This is the body of the email. Press `CTRL-D` to send message. Sometimes I need to press `CTRL-D` a second time after about 10 seconds if the message is not sent.
+Insert blank line after `Subject:`. This is the body of the email. Press `CTRL-D` to send message. Sometimes pressing `CTRL-D` a second time after about 10 seconds is needed if message is not sent.
 
 ### <a name="fail2ban"></a>Install Fail2ban
 
